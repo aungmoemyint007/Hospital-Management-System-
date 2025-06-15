@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedCare - Advanced Hospital System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Myanmar Font */
+    @font-face {
+      font-family: 'Myanmar';
+      src: url('https://cdn.jsdelivr.net/gh/LeonarAung/MyanmarFont@1.1.0/Zawgyi-One/zawgyi.ttf') format('truetype');
+      font-weight: bold;
+    }
+
+    :root {
+      --primary: #3a86ff;
+      --secondary: #8338ec;
+      --dark: #212529;
+      --light: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --text-muted: #6c757d;
+      --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .dark-mode {
+      --primary: #4dabf7;
+      --secondary: #9775fa;
+      --dark: #f8f9fa;
+      --light: #212529;
+      --card-bg: #2d3436;
+      --text: #f8f9fa;
+      --text-muted: #adb5bd;
+      --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.4s ease, color 0.2s ease;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .myanmar {
+      font-family: 'Myanmar', 'Poppins', sans-serif;
+      font-weight: bold;
+      line-height: 1.6;
+    }
+
+    /* 3D Transform Styles */
+    .card-3d {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .card-3d-inner {
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .card-3d:hover .card-3d-inner {
+      transform: rotateY(15deg) scale(1.03);
+    }
+
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      border: none;
+      font-size: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(30deg);
+      background: var(--secondary);
+    }
+
+    /* Navigation */
+    nav {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .logo i {
+      margin-right: 10px;
+      font-size: 2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-left: 2rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: white;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      color: white;
+      font-size: 1.8rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 5%;
+      margin-top: -80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(58, 134, 255, 0.1), rgba(131, 56, 236, 0.1));
+      z-index: -1;
+    }
+
+    .hero-content {
+      flex: 1;
+      padding-right: 2rem;
+    }
+
+    .hero-image {
+      flex: 1;
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      max-height: 80vh;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: var(--text-muted);
+      max-width: 600px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 5px 15px rgba(58, 134, 255, 0.4);
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background: var(--secondary);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(131, 56, 236, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      margin-left: 1rem;
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Features Section */
+    .section {
+      padding: 5rem 5%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-title p {
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+      font-size: 1.8rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+    }
+
+    /* Services Section */
+    .services {
+      background: linear-gradient(135deg, rgba(58, 134, 255, 0.05), rgba(131, 56, 236, 0.05));
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .service-img {
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .service-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .service-card:hover .service-img img {
+      transform: scale(1.1);
+    }
+
+    .service-content {
+      padding: 1.5rem;
+    }
+
+    .service-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .service-content p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Doctors Section */
+    .doctors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .doctor-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .doctor-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .doctor-img {
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .doctor-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .doctor-info {
+      padding: 1.5rem;
+    }
+
+    .doctor-info h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .doctor-info p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .social-links a {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      background: var(--secondary);
+      transform: translateY(-3px);
+    }
+
+    /* Appointment Section */
+    .appointment {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      text-align: center;
+      padding: 4rem 5%;
+      border-radius: 15px;
+      margin: 5rem 5% 0;
+      box-shadow: var(--shadow);
+    }
+
+    .appointment h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .appointment p {
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      opacity: 0.9;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 5rem 5% 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-col h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .footer-col h3::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary);
+    }
+
+    .footer-col p {
+      opacity: 0.8;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-links a {
+      color: white;
+      opacity: 0.8;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+      padding-left: 5px;
+    }
+
+    .contact-info {
+      list-style: none;
+    }
+
+    .contact-info li {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .contact-info i {
+      margin-right: 10px;
+      margin-top: 5px;
+      color: var(--primary);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0.7;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 100px;
+        height: auto;
+      }
+
+      .hero-content {
+        padding-right: 0;
+        margin-bottom: 3rem;
+      }
+
+      .hero-btns {
+        display: flex;
+        justify-content: center;
+      }
+
+      .hero-image img {
+        max-height: 400px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: var(--dark);
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 0;
+        transition: all 0.5s ease;
+      }
+
+      .nav-links.active {
+        left: 0;
+      }
+
+      .nav-links li {
+        margin: 1rem 0;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+      }
+
+      .appointment {
+        margin: 5rem 2% 0;
+        padding: 3rem 5%;
+      }
+
+      .appointment h2 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero-btns {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn-outline {
+        margin-left: 0;
+        margin-top: 1rem;
+      }
+
+      .features, .services-grid, .doctors-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">
+      <i class="fas fa-heartbeat"></i>
+      <span>MedCare</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#doctors">Doctors</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" class="myanmar">မြန်မာ</a></li>
+    </ul>
+    <div class="hamburger">
+      <i class="fas fa-bars"></i>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Advanced Healthcare <span>Solutions</span> For Everyone</h1>
+      <p>MedCare provides world-class medical services with cutting-edge technology and compassionate care. Our expert team is dedicated to your health and well-being.</p>
+      <div class="hero-btns">
+        <a href="#appointment" class="btn">Book Appointment</a>
+        <a href="#services" class="btn btn-outline">Our Services</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://img.freepik.com/free-vector/medical-team-concept-illustration_114360-1003.jpg" alt="Healthcare professionals">
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section" id="features">
+    <div class="section-title">
+      <h2>Why Choose MedCare</h2>
+      <p>We combine exceptional medical expertise with state-of-the-art technology to deliver the best possible care</p>
+    </div>
+    <div class="features">
+      <div class="feature-card card-3d">
+        <div class="card-3d-inner">
+          <div class="feature-icon">
+            <i class="fas fa-user-md"></i>
+          </div>
+          <h3>Expert Doctors</h3>
+          <p>Our board-certified physicians have years of experience in their respective specialties.</p>
+        </div>
+      </div>
+      <div class="feature-card card-3d">
+        <div class="card-3d-inner">
+          <div class="feature-icon">
+            <i class="fas fa-hospital"></i>
+          </div>
+          <h3>Modern Equipment</h3>
+          <p>We use the latest medical technology for accurate diagnostics and effective treatments.</p>
+        </div>
+      </div>
+      <div class="feature-card card-3d">
+        <div class="card-3d-inner">
+          <div class="feature-icon">
+            <i class="fas fa-ambulance"></i>
+          </div>
+          <h3>Emergency Care</h3>
+          <p>24/7 emergency services with rapid response times and fully equipped ambulances.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="section services" id="services">
+    <div class="section-title">
+      <h2>Our Medical Services</h2>
+      <p>Comprehensive healthcare services tailored to meet your individual needs</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-img">
+          <img src="https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg" alt="Cardiology">
+        </div>
+        <div class="service-content">
+          <h3>Cardiology</h3>
+          <p>Comprehensive heart care including diagnostics, treatment, and rehabilitation for all cardiac conditions.</p>
+          <a href="#" class="btn">Learn More</a>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-img">
+          <img src="https://img.freepik.com/free-photo/young-female-doctor-white-coat-stethoscope-standing-with-crossed-arms_141793-10013.jpg" alt="Neurology">
+        </div>
+        <div class="service-content">
+          <h3>Neurology</h3>
+          <p>Specialized care for disorders of the nervous system, including stroke, epilepsy, and multiple sclerosis.</p>
+          <a href="#" class="btn">Learn More</a>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-img">
+          <img src="https://img.freepik.com/free-photo/doctor-shaking-hands-with-patient_23-2149308479.jpg" alt="Orthopedics">
+        </div>
+        <div class="service-content">
+          <h3>Orthopedics</h3>
+          <p>Treatment for musculoskeletal injuries and conditions, from fractures to joint replacements.</p>
+          <a href="#" class="btn">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Doctors Section -->
+  <section class="section" id="doctors">
+    <div class="section-title">
+      <h2>Our Specialist Doctors</h2>
+      <p>Meet our team of highly qualified and experienced medical professionals</p>
+    </div>
+    <div class="doctors-grid">
+      <div class="doctor-card">
+        <div class="doctor-img">
+          <img src="https://img.freepik.com/free-photo/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture_409827-254.jpg" alt="Dr. Sarah Johnson">
+        </div>
+        <div class="doctor-info">
+          <h3>Dr. Sarah Johnson</h3>
+          <p>Cardiologist</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="doctor-card">
+        <div class="doctor-img">
+          <img src="https://img.freepik.com/free-photo/young-handsome-man-doctor-medical-robe_1303-17818.jpg" alt="Dr. Michael Chen">
+        </div>
+        <div class="doctor-info">
+          <h3>Dr. Michael Chen</h3>
+          <p>Neurologist</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="doctor-card">
+        <div class="doctor-img">
+          <img src="https://img.freepik.com/free-photo/doctor-with-his-arms-crossed_1368-5790.jpg" alt="Dr. Robert Williams">
+        </div>
+        <div class="doctor-info">
+          <h3>Dr. Robert Williams</h3>
+          <p>Orthopedic Surgeon</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="doctor-card">
+        <div class="doctor-img">
+          <img src="https://img.freepik.com/free-photo/young-beautiful-woman-pink-warm-sweater-natural-look-smiling-portrait-isolated-long-hair_285396-896.jpg" alt="Dr. Emily Davis">
+        </div>
+        <div class="doctor-info">
+          <h3>Dr. Emily Davis</h3>
+          <p>Pediatrician</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Appointment Section -->
+  <section class="appointment" id="appointment">
+    <h2>Need a Medical Consultation?</h2>
+    <p>Book an appointment with our specialists today and take the first step towards better health.</p>
+    <a href="#" class="btn">Book Appointment Now</a>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>About MedCare</h3>
+        <p>MedCare is a leading healthcare provider committed to delivering exceptional medical services with compassion and innovation.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#doctors">Doctors</a></li>
+          <li><a href="#appointment">Appointment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Services</h3>
+        <ul class="footer-links">
+          <li><a href="#">Cardiology</a></li>
+          <li><a href="#">Neurology</a></li>
+          <li><a href="#">Orthopedics</a></li>
+          <li><a href="#">Pediatrics</a></li>
+          <li><a href="#">Emergency Care</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Contact Us</h3>
+        <ul class="contact-info">
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <span>123 Medical Drive, Health City, HC 12345</span>
+          </li>
+          <li>
+            <i class="fas fa-phone-alt"></i>
+            <span>+1 (555) 123-4567</span>
+          </li>
+          <li>
+            <i class="fas fa-envelope"></i>
+            <span>info@medcare.com</span>
+          </li>
+          <li>
+            <i class="fas fa-clock"></i>
+            <span>Mon-Fri: 8:00 AM - 7:00 PM<br>Sat-Sun: 9:00 AM - 5:00 PM</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2023 MedCare Hospital. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Dark Mode Toggle -->
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </button>
+
+  <script>
+    // Mobile Navigation
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      hamburger.innerHTML = navLinks.classList.contains('active') ? 
+        '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+    });
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+      });
+    });
+
+    // Dark Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Check for saved user preference
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+      body.classList.add(currentTheme);
+      updateIcon();
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      const theme = body.classList.contains('dark-mode') ? 'dark-mode' : '';
+      localStorage.setItem('theme', theme);
+      updateIcon();
+    });
+
+    function updateIcon() {
+      const icon = themeToggle.querySelector('i');
+      if (body.classList.contains('dark-mode')) {
+        icon.classList.replace('fa-moon', 'fa-sun');
+      } else {
+        icon.classList.replace('fa-sun', 'fa-moon');
+      }
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
